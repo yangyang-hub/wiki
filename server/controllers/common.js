@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const pageHelper = require('../helpers/page')
 const basePathHelper = require('../helpers/basepath')
+const htmlMediaHelper = require('../helpers/html-media')
 const _ = require('lodash')
 const CleanCSS = require('clean-css')
 const moment = require('moment')
@@ -500,6 +501,7 @@ router.get('/*', async (req, res, next) => {
 
         // Handle missing extra field
         page.extra = page.extra || { css: '', js: '' }
+        page.render = htmlMediaHelper.rewriteHtmlMediaUrls(page.render, WIKI.config.basePath)
 
         if (!_.isEmpty(page.extra.css)) {
           injectCode.css = `${injectCode.css}\n${page.extra.css}`

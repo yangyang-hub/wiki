@@ -21,6 +21,7 @@ const now = Math.round(Date.now() / 1000)
 const babelConfig = fs.readJsonSync(path.join(process.cwd(), '.babelrc'))
 const cacheDir = '.webpack-cache/cache'
 const babelDir = path.join(process.cwd(), '.webpack-cache/babel')
+const extractedCssPublicPath = '../'
 
 process.noDeprecation = true
 
@@ -70,7 +71,12 @@ module.exports = {
         test: /\.css$/,
         use: [
           'style-loader',
-          MiniCssExtractPlugin.loader,
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: extractedCssPublicPath
+            }
+          },
           'css-loader',
           'postcss-loader'
         ]
@@ -85,6 +91,12 @@ module.exports = {
             }
           },
           'style-loader',
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: extractedCssPublicPath
+            }
+          },
           'css-loader',
           'postcss-loader',
           {
@@ -109,7 +121,12 @@ module.exports = {
             }
           },
           'style-loader',
-          MiniCssExtractPlugin.loader,
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: extractedCssPublicPath
+            }
+          },
           'css-loader',
           'postcss-loader',
           {
