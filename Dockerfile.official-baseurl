@@ -1,0 +1,19 @@
+ARG OFFICIAL_IMAGE=requarks/wiki:2.5.302
+
+FROM ${OFFICIAL_IMAGE}
+
+USER root
+WORKDIR /wiki
+
+# Overlay the runtime files modified by this fork.
+# This assumes the base image already contains the matching dependencies.
+COPY assets ./assets
+COPY server ./server
+
+# Optional reference files kept in the image for inspection.
+COPY config.sample.yml ./config.sample.yml
+COPY README.md ./README.md
+
+RUN chown -R node:node /wiki/assets /wiki/server /wiki/config.sample.yml /wiki/README.md
+
+USER node
