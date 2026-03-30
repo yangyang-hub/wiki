@@ -3,7 +3,7 @@
     v-layout(row, wrap)
       v-flex(xs12)
         .admin-header
-          img.animated.fadeInUp(src='/_assets/svg/icon-unlock.svg', alt='Authentication', style='width: 80px;')
+          img.animated.fadeInUp(:src='$helpers.withAssetPath(`svg/icon-unlock.svg`)', alt='Authentication', style='width: 80px;')
           .admin-header-title
             .headline.primary--text.animated.fadeInLeft {{ $t('admin:auth.title') }}
             .subtitle-1.grey--text.animated.fadeInLeft.wait-p4s {{ $t('admin:auth.subtitle') }}
@@ -206,13 +206,13 @@
               .body-2 {{host}}
               v-divider.my-3
               .body-2: strong {{$t('admin:auth.callbackUrl')}}
-              .body-2 {{host}}/login/{{strategy.key}}/callback
+              .body-2 {{host}}{{basePath}}/login/{{strategy.key}}/callback
               v-divider.my-3
               .body-2: strong {{$t('admin:auth.loginUrl')}}
-              .body-2 {{host}}/login
+              .body-2 {{host}}{{basePath}}/login
               v-divider.my-3
               .body-2: strong {{$t('admin:auth.logoutUrl')}}
-              .body-2 {{host}}
+              .body-2 {{host}}{{basePath}}
               v-divider.my-3
               .body-2: strong {{$t('admin:auth.tokenEndpointAuthMethod')}}
               .body-2 HTTP-POST
@@ -242,6 +242,7 @@ export default {
       activeStrategies: [],
       selectedStrategy: '',
       host: '',
+      basePath: '',
       strategy: {
         strategy: {}
       }
@@ -423,7 +424,10 @@ export default {
     host: {
       query: hostQuery,
       fetchPolicy: 'network-only',
-      update: (data) => _.cloneDeep(data.site.config.host),
+      update (data) {
+        this.basePath = _.get(data, 'site.config.basePath', '')
+        return _.cloneDeep(data.site.config.host)
+      },
       watchLoading (isLoading) {
         this.$store.commit(`loading${isLoading ? 'Start' : 'Stop'}`, 'admin-auth-host-refresh')
       }

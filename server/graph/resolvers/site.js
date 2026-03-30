@@ -1,5 +1,6 @@
 const graphHelper = require('../../helpers/graph')
 const _ = require('lodash')
+const basePathHelper = require('../../helpers/basepath')
 
 /* global WIKI */
 
@@ -14,6 +15,7 @@ module.exports = {
     async config(obj, args, context, info) {
       return {
         host: WIKI.config.host,
+        basePath: WIKI.config.basePath,
         title: WIKI.config.title,
         company: WIKI.config.company,
         contentLicense: WIKI.config.contentLicense,
@@ -47,6 +49,10 @@ module.exports = {
             siteHost = siteHost.slice(0, -1)
           }
           WIKI.config.host = siteHost
+        }
+
+        if (args.hasOwnProperty('basePath')) {
+          WIKI.config.basePath = basePathHelper.normalizeBasePath(args.basePath)
         }
 
         if (args.hasOwnProperty('title')) {
@@ -125,7 +131,9 @@ module.exports = {
           forceDownload: _.get(args, 'uploadForceDownload', WIKI.config.uploads.forceDownload)
         }
 
-        await WIKI.configSvc.saveToDb(['host', 'title', 'company', 'contentLicense', 'footerOverride', 'seo', 'logoUrl', 'pageExtensions', 'auth', 'editShortcuts', 'features', 'security', 'uploads'])
+        WIKI.config.siteBaseUrl = basePathHelper.withSiteUrl(WIKI.config.host, WIKI.config.basePath)
+
+        await WIKI.configSvc.saveToDb(['host', 'basePath', 'title', 'company', 'contentLicense', 'footerOverride', 'seo', 'logoUrl', 'pageExtensions', 'auth', 'editShortcuts', 'features', 'security', 'uploads'])
 
         if (WIKI.config.security.securityTrustProxy) {
           WIKI.app.enable('trust proxy')

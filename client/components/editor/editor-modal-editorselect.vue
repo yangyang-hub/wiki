@@ -13,7 +13,7 @@
                 ripple
                 )
                 v-card-text.text-center(@click='selectEditor("markdown")')
-                  img(src='/_assets/svg/editor-icon-markdown.svg', alt='Markdown', style='width: 36px;')
+                  img(:src='$helpers.withAssetPath(`svg/editor-icon-markdown.svg`)', alt='Markdown', style='width: 36px;')
                   .body-2.primary--text.mt-2 Markdown
                   .caption.grey--text Plain Text Formatting
             v-flex(xs6)
@@ -23,7 +23,7 @@
                 ripple
                 )
                 v-card-text.text-center(@click='selectEditor("ckeditor")')
-                  img(src='/_assets/svg/editor-icon-ckeditor.svg', alt='Visual Editor', style='width: 36px;')
+                  img(:src='$helpers.withAssetPath(`svg/editor-icon-ckeditor.svg`)', alt='Visual Editor', style='width: 36px;')
                   .body-2.mt-2.primary--text Visual Editor
                   .caption.grey--text Rich-text WYSIWYG
             v-flex(xs4)
@@ -33,7 +33,7 @@
                 ripple
                 )
                 v-card-text.text-center(@click='selectEditor("asciidoc")')
-                  img(src='/_assets/svg/editor-icon-asciidoc.svg', alt='AsciiDoc', style='width: 36px;')
+                  img(:src='$helpers.withAssetPath(`svg/editor-icon-asciidoc.svg`)', alt='AsciiDoc', style='width: 36px;')
                   .body-2.primary--text.mt-2 AsciiDoc
                   .caption.grey--text Plain Text Formatting
             v-flex(xs4)
@@ -43,7 +43,7 @@
                 ripple
                 )
                 v-card-text.text-center(@click='selectEditor("code")')
-                  img(src='/_assets/svg/editor-icon-code.svg', alt='Code', style='width: 36px;')
+                  img(:src='$helpers.withAssetPath(`svg/editor-icon-code.svg`)', alt='Code', style='width: 36px;')
                   .body-2.primary--text.mt-2 Code
                   .caption.grey--text Raw HTML
             v-flex(xs4)
@@ -53,7 +53,7 @@
                 ripple
                 )
                 v-card-text.text-center(@click='fromTemplate')
-                  img(src='/_assets/svg/icon-cube.svg', alt='From Template', style='width: 42px; opacity: .5;')
+                  img(:src='$helpers.withAssetPath(`svg/icon-cube.svg`)', alt='From Template', style='width: 42px; opacity: .5;')
                   .body-2.mt-1.teal--text From Template
                   .caption.grey--text Use an existing page...
 
@@ -100,7 +100,7 @@ export default {
       this.templateDialogIsShown = false
       this.isShown = false
       this.$nextTick(() => {
-        window.location.assign(`/e/${this.locale}/${this.path}?from=${id}`)
+        window.location.assign(this.$helpers.withBasePath(`/e/${this.locale}/${this.path}?from=${id}`))
       })
     }
   }

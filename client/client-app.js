@@ -40,6 +40,7 @@ import helpers from './helpers'
 window.WIKI = null
 window.boot = boot
 window.Hammer = Hammer
+siteConfig.basePath = siteConfig.basePath || ''
 
 moment.locale(siteConfig.lang)
 
@@ -49,8 +50,8 @@ store.commit('user/REFRESH_AUTH')
 // Initialize Apollo Client (GraphQL)
 // ====================================
 
-const graphQLEndpoint = window.location.protocol + '//' + window.location.host + '/graphql'
-const graphQLWSEndpoint = ((window.location.protocol === 'https:') ? 'wss:' : 'ws:') + '//' + window.location.host + '/graphql-subscriptions'
+const graphQLEndpoint = window.location.protocol + '//' + window.location.host + `${siteConfig.basePath}/graphql`
+const graphQLWSEndpoint = ((window.location.protocol === 'https:') ? 'wss:' : 'ws:') + '//' + window.location.host + `${siteConfig.basePath}/graphql-subscriptions`
 
 const graphQLLink = ApolloLink.from([
   new ErrorLink(({ graphQLErrors, networkError }) => {

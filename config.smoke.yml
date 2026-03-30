@@ -8,7 +8,7 @@
 # Port the server should listen to
 # ---------------------------------------------------------------------
 
-port: 3000
+port: 3100
 
 # ---------------------------------------------------------------------
 # Database
@@ -21,7 +21,7 @@ port: 3000
 # - sqlite = SQLite 3.9 or later
 
 db:
-  type: postgres
+  type: sqlite
 
   # PostgreSQL / MySQL / MariaDB / MS SQL Server only:
   host: localhost
@@ -47,7 +47,7 @@ db:
   schema: public
 
   # SQLite only:
-  storage: path/to/database.sqlite
+  storage: ./data/wiki.db
 
 #######################################################################
 # ADVANCED OPTIONS                                                    #
@@ -99,7 +99,7 @@ pool:
 # ---------------------------------------------------------------------
 # Leave 0.0.0.0 for all interfaces
 
-bindIP: 0.0.0.0
+bindIP: 127.0.0.1
 
 # ---------------------------------------------------------------------
 # Log Level
@@ -128,10 +128,8 @@ offline: false
 # ---------------------------------------------------------------------
 # Optional public path prefix when the site is mounted behind a gateway
 # or reverse proxy on a sub-path (e.g. /wiki). Leave empty for root.
-# You can also use `baseurl` as an alias. If neither is set here, the
-# app falls back to env vars: `WIKI_BASE_PATH`, `BASE_PATH`, `BASEURL`.
 
-basePath: ''
+basePath: '/wiki'
 
 # ---------------------------------------------------------------------
 # High-Availability

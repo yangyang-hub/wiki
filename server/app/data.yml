@@ -26,6 +26,7 @@ defaults:
     logLevel: info
     logFormat: default
     offline: false
+    basePath: ''
     ha: false
     bodyParserLimit: 5mb
     # DB defaults

@@ -47,7 +47,7 @@ export default {
           })
           Cookies.remove('jwt')
           _.delay(() => {
-            window.location.assign('/login')
+            window.location.assign(this.$helpers.withBasePath('/login'))
           }, 1000)
         } else {
           throw new Error(resp.message)

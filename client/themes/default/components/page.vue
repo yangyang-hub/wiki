@@ -113,7 +113,7 @@
                   label
                   :color='$vuetify.theme.dark ? `teal darken-1` : `teal lighten-5`'
                   v-for='(tag, idx) in tags'
-                  :href='`/t/` + tag.tag'
+                  :href='$helpers.withBasePath(`/t/` + tag.tag)'
                   :key='`tag-` + tag.tag'
                   )
                   v-icon(:color='$vuetify.theme.dark ? `teal lighten-3` : `teal`', left, small) mdi-tag
@@ -121,7 +121,7 @@
                 v-chip.mr-1.mb-1(
                   label
                   :color='$vuetify.theme.dark ? `teal darken-1` : `teal lighten-5`'
-                  :href='`/t/` + tags.map(t => t.tag).join(`/`)'
+                  :href='$helpers.withBasePath(`/t/` + tags.map(t => t.tag).join(`/`))'
                   :aria-label='$t(`common:page.tagsMatching`)'
                   )
                   v-icon(:color='$vuetify.theme.dark ? `teal lighten-3` : `teal`', size='20') mdi-tag-multiple
@@ -171,7 +171,7 @@
                     template(v-slot:activator='{ on }')
                       v-btn.btn-animate-edit(
                         icon
-                        :href='"/h/" + locale + "/" + path'
+                        :href='$helpers.withBasePath(`/h/` + locale + `/` + path)'
                         v-on='on'
                         x-small
                         v-if='hasReadHistoryPermission'
@@ -367,9 +367,11 @@ import _ from 'lodash'
 import ClipboardJS from 'clipboard'
 import Vue from 'vue'
 
+/* global siteConfig */
+
 Vue.component('Tabset', Tabset)
 
-Prism.plugins.autoloader.languages_path = '/_assets/js/prism/'
+Prism.plugins.autoloader.languages_path = `${siteConfig.assetBasePath}/js/prism/`
 Prism.plugins.NormalizeWhitespace.setDefaults({
   'remove-trailing': true,
   'remove-indent': true,
@@ -649,7 +651,7 @@ export default {
   },
   methods: {
     goHome () {
-      window.location.assign('/')
+      window.location.assign(this.$helpers.withBasePath('/'))
     },
     toggleNavigation () {
       this.navOpen = !this.navOpen
@@ -669,25 +671,25 @@ export default {
       }
     },
     pageEdit () {
-      this.$root.$emit('pageEdit')
+      this.$root.$emit('page-edit')
     },
     pageHistory () {
-      this.$root.$emit('pageHistory')
+      this.$root.$emit('page-history')
     },
     pageSource () {
-      this.$root.$emit('pageSource')
+      this.$root.$emit('page-source')
     },
     pageConvert () {
-      this.$root.$emit('pageConvert')
+      this.$root.$emit('page-convert')
     },
     pageDuplicate () {
-      this.$root.$emit('pageDuplicate')
+      this.$root.$emit('page-duplicate')
     },
     pageMove () {
-      this.$root.$emit('pageMove')
+      this.$root.$emit('page-move')
     },
     pageDelete () {
-      this.$root.$emit('pageDelete')
+      this.$root.$emit('page-delete')
     },
     handleSideNavVisibility () {
       if (window.innerWidth === this.winWidth) { return }

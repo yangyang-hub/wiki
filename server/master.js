@@ -9,6 +9,7 @@ const KnexSessionStore = require('connect-session-knex')(session)
 const favicon = require('serve-favicon')
 const path = require('path')
 const _ = require('lodash')
+const basePathHelper = require('./helpers/basepath')
 
 /* global WIKI */
 
@@ -36,6 +37,8 @@ module.exports = async () => {
   const app = express()
   WIKI.app = app
   app.use(compression())
+  const basePath = WIKI.config.basePath || ''
+  const assetBasePath = basePathHelper.withBasePath(basePath, '/_assets')
 
   // ----------------------------------------
   // Security
@@ -53,14 +56,14 @@ module.exports = async () => {
   // ----------------------------------------
 
   app.use(favicon(path.join(WIKI.ROOTPATH, 'assets', 'favicon.ico')))
-  app.use('/_assets/svg/twemoji', async (req, res, next) => {
+  app.use(basePathHelper.withBasePath(basePath, '/_assets/svg/twemoji'), async (req, res, next) => {
     try {
       WIKI.asar.serve('twemoji', req, res, next)
     } catch (err) {
       res.sendStatus(404)
     }
   })
-  app.use('/_assets', express.static(path.join(WIKI.ROOTPATH, 'assets'), {
+  app.use(assetBasePath, express.static(path.join(WIKI.ROOTPATH, 'assets'), {
     index: false,
     maxAge: '7d'
   }))
@@ -147,6 +150,8 @@ module.exports = async () => {
   app.use(async (req, res, next) => {
     res.locals.siteConfig = {
       title: WIKI.config.title,
+      basePath: basePath,
+      assetBasePath,
       theme: WIKI.config.theming.theme,
       darkMode: WIKI.config.theming.darkMode,
       tocPosition: WIKI.config.theming.tocPosition || 'left',
@@ -162,9 +167,9 @@ module.exports = async () => {
     next()
   })
 
-  app.use('/', ctrl.auth)
-  app.use('/', ctrl.upload)
-  app.use('/', ctrl.common)
+  app.use(basePath || '/', ctrl.auth)
+  app.use(basePath || '/', ctrl.upload)
+  app.use(basePath || '/', ctrl.common)
 
   // ----------------------------------------
   // Error handling
@@ -177,7 +182,7 @@ module.exports = async () => {
   })
 
   app.use((err, req, res, next) => {
-    if (req.path === '/graphql') {
+    if (req.path === basePathHelper.withBasePath(basePath, '/graphql')) {
       res.status(err.status || 500).json({
         data: {},
         errors: [{

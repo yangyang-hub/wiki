@@ -4,7 +4,7 @@
     v-navigation-drawer.pb-0.elevation-1(app, fixed, clipped, :right='$vuetify.rtl', permanent, width='300')
       vue-scroll(:ops='scrollStyle')
         v-list(dense, nav)
-          v-list-item(href='/')
+          v-list-item(:href='$helpers.withBasePath(`/`)')
             v-list-item-icon: v-icon mdi-home
             v-list-item-title {{$t('common:header.home')}}
           template(v-for='(tags, groupName) in tagsGrouped')
@@ -89,7 +89,7 @@
           v-btn(text, height='40'): v-icon(size='20') mdi-chevron-double-down
       v-divider
       .text-center.pt-10(v-if='selection.length < 1')
-        img(src='/_assets/svg/icon-price-tag.svg')
+        img(:src='$helpers.withAssetPath(`svg/icon-price-tag.svg`)')
         .subtitle-2.grey--text {{$t('tags:selectOneMoreTagsHint')}}
       .px-5.py-2(v-else)
         v-data-iterator(
@@ -113,11 +113,11 @@
               .subtitle-2.grey--text.mt-5 {{$t('tags:retrievingResultsLoading')}}
           template(v-slot:no-data)
             .text-center.pt-10
-              img(src='/_assets/svg/icon-info.svg')
+              img(:src='$helpers.withAssetPath(`svg/icon-info.svg`)')
               .subtitle-2.grey--text {{$t('tags:noResults')}}
           template(v-slot:no-results)
             .text-center.pt-10
-              img(src='/_assets/svg/icon-info.svg')
+              img(:src='$helpers.withAssetPath(`svg/icon-info.svg`)')
               .subtitle-2.grey--text {{$t('tags:noResultsWithFilter')}}
           template(v-slot:default='props')
             v-row(align='stretch')
@@ -158,11 +158,11 @@ import _ from 'lodash'
 import tagsQuery from 'gql/common/common-pages-query-tags.gql'
 import pagesQuery from 'gql/common/common-pages-query-list.gql'
 
-/* global siteLangs */
+/* global siteLangs siteConfig */
 
 const router = new VueRouter({
   mode: 'history',
-  base: '/t'
+  base: `${siteConfig.basePath || ''}/t`
 })
 
 export default {
@@ -294,7 +294,7 @@ export default {
       this.$router.push(urlObj)
     },
     goTo (page) {
-      window.location.assign(`/${page.locale}/${page.path}`)
+      window.location.assign(this.$helpers.withBasePath(`/${page.locale}/${page.path}`))
     }
   },
   apollo: {

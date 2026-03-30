@@ -218,7 +218,7 @@ export default {
       this.$store.commit(`loadingStop`, 'browse-load')
     },
     goHome () {
-      window.location.assign(siteLangs.length > 0 ? `/${this.locale}/home` : '/')
+      window.location.assign(this.$helpers.withBasePath(siteLangs.length > 0 ? `/${this.locale}/home` : '/'))
     }
   },
   mounted () {

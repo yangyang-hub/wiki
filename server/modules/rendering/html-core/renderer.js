@@ -2,6 +2,7 @@ const _ = require('lodash')
 const cheerio = require('cheerio')
 const uslug = require('uslug')
 const pageHelper = require('../../../helpers/page')
+const basePathHelper = require('../../../helpers/basepath')
 const URL = require('url').URL
 
 const mustacheRegExp = /(\{|&#x7b;?){2}(.+?)(\}|&#x7d;?){2}/i
@@ -26,6 +27,45 @@ module.exports = {
       const renderer = require(`../${_.kebabCase(child.key)}/renderer.js`)
       await renderer.init($, child.config)
     }
+
+    // --------------------------------
+    // Prefix local media URLs with basePath
+    // --------------------------------
+
+    const rewriteLocalAssetAttr = (elm, attrName) => {
+      const attrValue = $(elm).attr(attrName)
+      if (!_.isString(attrValue) || _.isEmpty(attrValue)) {
+        return
+      }
+      $(elm).attr(attrName, basePathHelper.withBasePathIfLocal(WIKI.config.basePath, attrValue))
+    }
+
+    $('img, source, video, audio, iframe, embed').each((i, elm) => {
+      ;['src', 'data-src', 'lazy-src', 'poster'].forEach(attrName => rewriteLocalAssetAttr(elm, attrName))
+
+      const srcset = $(elm).attr('srcset')
+      if (_.isString(srcset) && !_.isEmpty(srcset)) {
+        const rewrittenSrcset = srcset
+          .split(',')
+          .map(entry => {
+            const trimmedEntry = _.trim(entry)
+            if (_.isEmpty(trimmedEntry)) {
+              return trimmedEntry
+            }
+
+            const parts = trimmedEntry.split(/\s+/)
+            parts[0] = basePathHelper.withBasePathIfLocal(WIKI.config.basePath, parts[0])
+            return parts.join(' ')
+          })
+          .join(', ')
+
+        $(elm).attr('srcset', rewrittenSrcset)
+      }
+    })
+
+    $('object').each((i, elm) => {
+      rewriteLocalAssetAttr(elm, 'data')
+    })
 
     // --------------------------------
     // Detect internal / external links

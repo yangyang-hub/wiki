@@ -1,8 +1,11 @@
 require('core-js/stable')
 require('regenerator-runtime/runtime')
 
-/* global siteConfig */
+/* global siteConfig, __webpack_public_path__ */
 /* eslint-disable no-unused-expressions */
+
+siteConfig.assetBasePath = siteConfig.assetBasePath || `${siteConfig.basePath || ''}/_assets`
+__webpack_public_path__ = `${siteConfig.assetBasePath}/`
 
 switch (window.document.documentElement.lang) {
   case 'ar':

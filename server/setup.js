@@ -11,6 +11,7 @@ const _ = require('lodash')
 const crypto = Promise.promisifyAll(require('crypto'))
 const pem2jwk = require('pem-jwk').pem2jwk
 const semver = require('semver')
+const basePathHelper = require('./helpers/basepath')
 
 /* global WIKI */
 
@@ -19,6 +20,8 @@ module.exports = () => {
     path: '',
     title: 'Wiki.js'
   }
+  WIKI.config.basePath = basePathHelper.normalizeBasePath(WIKI.config.basePath)
+  const assetBasePath = basePathHelper.withBasePath(WIKI.config.basePath, '/_assets')
 
   WIKI.system = require('./core/system')
 
@@ -34,7 +37,7 @@ module.exports = () => {
   // ----------------------------------------
 
   app.use(favicon(path.join(WIKI.ROOTPATH, 'assets', 'favicon.ico')))
-  app.use('/_assets', express.static(path.join(WIKI.ROOTPATH, 'assets')))
+  app.use(assetBasePath, express.static(path.join(WIKI.ROOTPATH, 'assets')))
 
   // ----------------------------------------
   // View Engine Setup
@@ -50,6 +53,10 @@ module.exports = () => {
   app.locals.data = WIKI.data
   app.locals._ = require('lodash')
   app.locals.devMode = WIKI.devMode
+  app.locals.siteConfig = {
+    basePath: WIKI.config.basePath,
+    assetBasePath
+  }
 
   // ----------------------------------------
   // HMR (Dev Mode Only)
@@ -88,6 +95,7 @@ module.exports = () => {
       })
       _.set(WIKI.config, 'graphEndpoint', 'https://graph.requarks.io')
       _.set(WIKI.config, 'host', req.body.siteUrl)
+      _.set(WIKI.config, 'basePath', basePathHelper.normalizeBasePath(req.body.basePath))
       _.set(WIKI.config, 'lang', {
         code: 'en',
         autoUpdate: true,
@@ -175,6 +183,7 @@ module.exports = () => {
       WIKI.logger.info('Persisting config to DB...')
       await WIKI.configSvc.saveToDb([
         'auth',
+        'basePath',
         'certs',
         'company',
         'features',
@@ -348,7 +357,7 @@ module.exports = () => {
       // WIKI.telemetry.sendEvent('setup', 'install-completed')
       res.json({
         ok: true,
-        redirectPath: '/',
+        redirectPath: basePathHelper.withBasePath(WIKI.config.basePath, '/'),
         redirectPort: WIKI.config.port
       }).end()
 

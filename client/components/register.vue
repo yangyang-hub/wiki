@@ -88,7 +88,7 @@
                 v-card-actions.py-3.grey(:class='$vuetify.theme.dark ? `darken-4-l1` : `lighten-4`')
                   v-spacer
                   i18next.caption(path='auth:switchToLogin.text', tag='div')
-                    a.caption(href='/login', place='link') {{ $t('auth:switchToLogin.link') }}
+                    a.caption(:href='$helpers.withBasePath(`/login`)', place='link') {{ $t('auth:switchToLogin.link') }}
                   v-spacer
 
     loader(v-model='isLoading', :mode='loaderMode', :icon='loaderIcon', :color='loaderColor', :title='loaderTitle', :subtitle='loaderSubtitle')

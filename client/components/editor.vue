@@ -274,7 +274,7 @@ export default {
       this.dialogProgress = false
     },
     openConflict() {
-      this.$root.$emit('saveConflict')
+      this.$root.$emit('save-conflict')
     },
     async save({ rethrow = false, overwrite = false } = {}) {
       this.showProgressDialog('saving')
@@ -365,7 +365,7 @@ export default {
             this.$store.set('editor/id', _.get(resp, 'page.id'))
             this.$store.set('editor/mode', 'update')
             this.exitConfirmed = true
-            window.location.assign(`/${this.$store.get('page/locale')}/${this.$store.get('page/path')}`)
+            window.location.assign(this.$helpers.withBasePath(`/${this.$store.get('page/locale')}/${this.$store.get('page/path')}`))
           } else {
             throw new Error(_.get(resp, 'responseResult.message'))
           }
@@ -389,7 +389,7 @@ export default {
             }
           })
           if (_.get(conflictResp, 'data.pages.checkConflicts', false)) {
-            this.$root.$emit('saveConflict')
+            this.$root.$emit('save-conflict')
             throw new Error(this.$t('editor:conflict.warning'))
           }
 
@@ -469,7 +469,7 @@ export default {
             })
             if (this.locale !== this.$store.get('page/locale') || this.path !== this.$store.get('page/path')) {
               _.delay(() => {
-                window.location.replace(`/e/${this.$store.get('page/locale')}/${this.$store.get('page/path')}`)
+                window.location.replace(this.$helpers.withBasePath(`/e/${this.$store.get('page/locale')}/${this.$store.get('page/path')}`))
               }, 1000)
             }
           } else {
@@ -521,9 +521,9 @@ export default {
       this.exitConfirmed = true
       _.delay(() => {
         if (this.$store.get('editor/mode') === 'create') {
-          window.location.assign(`/`)
+          window.location.assign(this.$helpers.withBasePath(`/`))
         } else {
-          window.location.assign(`/${this.$store.get('page/locale')}/${this.$store.get('page/path')}`)
+          window.location.assign(this.$helpers.withBasePath(`/${this.$store.get('page/locale')}/${this.$store.get('page/path')}`))
         }
       }, 500)
     },

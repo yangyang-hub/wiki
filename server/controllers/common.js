@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const pageHelper = require('../helpers/page')
+const basePathHelper = require('../helpers/basepath')
 const _ = require('lodash')
 const CleanCSS = require('clean-css')
 const moment = require('moment')
@@ -9,6 +10,7 @@ const qs = require('querystring')
 /* global WIKI */
 
 const tmplCreateRegex = /^[0-9]+(,[0-9]+)?$/
+const withBasePath = targetPath => basePathHelper.withBasePath(WIKI.config.basePath, targetPath)
 
 /**
  * Robots.txt
@@ -105,7 +107,7 @@ router.get(['/e', '/e/*'], async (req, res, next) => {
   const pageArgs = pageHelper.parsePath(req.path, { stripExt: true })
 
   if (WIKI.config.lang.namespacing && !pageArgs.explicitLocale) {
-    return res.redirect(`/e/${pageArgs.locale}/${pageArgs.path}`)
+    return res.redirect(withBasePath(`/e/${pageArgs.locale}/${pageArgs.path}`))
   }
 
   req.i18n.changeLanguage(pageArgs.locale)
@@ -241,7 +243,7 @@ router.get(['/h', '/h/*'], async (req, res, next) => {
   const pageArgs = pageHelper.parsePath(req.path, { stripExt: true })
 
   if (WIKI.config.lang.namespacing && !pageArgs.explicitLocale) {
-    return res.redirect(`/h/${pageArgs.locale}/${pageArgs.path}`)
+    return res.redirect(withBasePath(`/h/${pageArgs.locale}/${pageArgs.path}`))
   }
 
   req.i18n.changeLanguage(pageArgs.locale)
@@ -276,7 +278,7 @@ router.get(['/h', '/h/*'], async (req, res, next) => {
 
     res.render('history', { page, effectivePermissions })
   } else {
-    res.redirect(`/${pageArgs.path}`)
+    res.redirect(withBasePath(`/${pageArgs.path}`))
   }
 })
 
@@ -286,7 +288,7 @@ router.get(['/h', '/h/*'], async (req, res, next) => {
 router.get(['/i', '/i/:id'], async (req, res, next) => {
   const pageId = _.toSafeInteger(req.params.id)
   if (pageId <= 0) {
-    return res.redirect('/')
+    return res.redirect(withBasePath('/'))
   }
 
   const page = await WIKI.models.pages.query().column(['path', 'localeCode', 'isPrivate', 'privateNS']).findById(pageId)
@@ -308,9 +310,9 @@ router.get(['/i', '/i/:id'], async (req, res, next) => {
   }
 
   if (WIKI.config.lang.namespacing) {
-    return res.redirect(`/${page.localeCode}/${page.path}`)
+    return res.redirect(withBasePath(`/${page.localeCode}/${page.path}`))
   } else {
-    return res.redirect(`/${page.path}`)
+    return res.redirect(withBasePath(`/${page.path}`))
   }
 })
 
@@ -343,7 +345,7 @@ router.get(['/s', '/s/*'], async (req, res, next) => {
   pageArgs.tags = _.get(page, 'tags', [])
 
   if (WIKI.config.lang.namespacing && !pageArgs.explicitLocale) {
-    return res.redirect(`/s/${pageArgs.locale}/${pageArgs.path}`)
+    return res.redirect(withBasePath(`/s/${pageArgs.locale}/${pageArgs.path}`))
   }
 
   // -> Effective Permissions
@@ -383,7 +385,7 @@ router.get(['/s', '/s/*'], async (req, res, next) => {
       res.render('source', { page, effectivePermissions })
     }
   } else {
-    res.redirect(`/${pageArgs.path}`)
+    res.redirect(withBasePath(`/${pageArgs.path}`))
   }
 })
 
@@ -422,7 +424,7 @@ router.get('/*', async (req, res, next) => {
   if (isPage) {
     if (WIKI.config.lang.namespacing && !pageArgs.explicitLocale) {
       const query = !_.isEmpty(req.query) ? `?${qs.stringify(req.query)}` : ''
-      return res.redirect(`/${pageArgs.locale}/${pageArgs.path}${query}`)
+      return res.redirect(withBasePath(`/${pageArgs.locale}/${pageArgs.path}${query}`))
     }
 
     req.i18n.changeLanguage(pageArgs.locale)
@@ -443,12 +445,12 @@ router.get('/*', async (req, res, next) => {
       // -> Check User Access
       if (!effectivePermissions.pages.read) {
         if (req.user.id === 2) {
-          res.cookie('loginRedirect', req.path, {
+          res.cookie('loginRedirect', req.originalUrl, {
             maxAge: 15 * 60 * 1000
           })
         }
         if (pageArgs.path === 'home' && req.user.id === 2) {
-          return res.redirect('/login')
+          return res.redirect(withBasePath('/login'))
         }
         _.set(res.locals, 'pageMeta.title', 'Unauthorized')
         return res.status(403).render('unauthorized', {

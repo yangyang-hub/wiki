@@ -1,5 +1,8 @@
 const { full: mdEmoji } = require('markdown-it-emoji')
 const twemoji = require('twemoji')
+const basePathHelper = require('../../../helpers/basepath')
+
+/* global WIKI */
 
 // ------------------------------------
 // Markdown - Emoji
@@ -12,7 +15,7 @@ module.exports = {
     md.renderer.rules.emoji = (token, idx) => {
       return twemoji.parse(token[idx].content, {
         callback (icon, opts) {
-          return `/_assets/svg/twemoji/${icon}.svg`
+          return basePathHelper.withBasePath(WIKI.config.basePath, `/_assets/svg/twemoji/${icon}.svg`)
         }
       })
     }

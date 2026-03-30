@@ -3,7 +3,7 @@
     v-layout(row, wrap)
       v-flex(xs12)
         .admin-header
-          img.animated.fadeInUp(src='/_assets/svg/icon-customer.svg', alt='Users', style='width: 80px;')
+          img.animated.fadeInUp(:src='$helpers.withAssetPath(`svg/icon-customer.svg`)', alt='Users', style='width: 80px;')
           .admin-header-title
             .headline.blue--text.text--darken-2.animated.fadeInLeft Users
             .subtitle-1.grey--text.animated.fadeInLeft.wait-p2s Manage users

@@ -124,7 +124,7 @@ export default {
     })
 
     // Handle save conflict
-    this.$root.$on('saveConflict', () => {
+    this.$root.$on('save-conflict', () => {
       this.isConflict = true
     })
     this.$root.$on('overwriteEditorContent', () => {

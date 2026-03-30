@@ -24,6 +24,67 @@
 
 </div>
 
+## Fork Notice
+
+本仓库基于 Wiki.js 官方 `2.5.302` 版本进行二次开发，主要新增了 `baseurl` / `basePath` 能力，用于支持通过网关挂载到子路径，例如：
+
+- `/wiki`
+- `/portal/wiki`
+
+适用场景包括：
+
+- 通过反向代理或网关以子路径方式发布
+- 嵌入到已有业务系统中
+- 同域名下按上下文路径区分多个系统
+
+### 本次增强内容
+
+- 支持在 [config.yml](config.yml) 中配置 `basePath`
+- 支持使用 `baseurl` 作为 `basePath` 的兼容别名
+- 当配置文件未设置时，自动回退读取环境变量：
+  - `WIKI_BASE_PATH`
+  - `BASE_PATH`
+  - `BASEURL`
+- 页面路由、GraphQL、静态资源、动态 chunk、登录页、后台页、标签页等路径已接入 `basePath`
+- 页面内容中的本地图片与常见媒体资源会自动附加 `basePath`
+
+### 配置示例
+
+```yml
+host: https://example.com
+basePath: /wiki
+```
+
+也可以写成：
+
+```yml
+host: https://example.com
+baseurl: /wiki
+```
+
+如果 `config.yml` 中没有配置，则可以通过环境变量启动：
+
+```bash
+WIKI_BASE_PATH=/wiki
+```
+
+### 使用说明
+
+- 访问地址示例：`https://example.com/wiki`
+- 如果重新构建前端资源，建议显式带上环境变量：
+
+```bash
+WIKI_BASE_PATH=/wiki npm run build
+```
+
+- 修改 `basePath` 后需要重启服务
+
+### 说明
+
+- 本 README 顶部为当前分支的定制说明
+- 下方其余内容保留自 Wiki.js 官方 README，便于继续参考原项目资料
+- 如需了解官方项目，请访问：https://github.com/requarks/wiki
+
 - **[Official Website](https://js.wiki/)**
 - **[Documentation](https://docs.requarks.io/)**
 - [Requirements](https://docs.requarks.io/install/requirements)

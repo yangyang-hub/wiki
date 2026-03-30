@@ -4,7 +4,7 @@
       .subtitle-1 {{ $t('admin:utilities.exportTitle') }}
     v-card-text
       .text-center
-        img.animated.fadeInUp.wait-p1s(src='/_assets/svg/icon-big-parcel.svg')
+        img.animated.fadeInUp.wait-p1s(:src='$helpers.withAssetPath(`svg/icon-big-parcel.svg`)')
         .body-2 Export to tarball / file system
       v-divider.my-4
       .body-2 What do you want to export?

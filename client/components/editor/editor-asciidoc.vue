@@ -126,6 +126,8 @@
 </template>
 
 <script>
+/* global siteConfig, siteLangs */
+
 import _ from 'lodash'
 import { get, sync } from 'vuex-pathify'
 import DOMPurify from 'dompurify'
@@ -473,7 +475,7 @@ export default {
     })
 
     // Handle save conflict
-    this.$root.$on('saveConflict', () => {
+    this.$root.$on('save-conflict', () => {
       this.toggleModal(`editorModalConflict`)
     })
     this.$root.$on('overwriteEditorContent', () => {

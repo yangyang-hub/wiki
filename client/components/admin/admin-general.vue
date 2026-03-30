@@ -3,7 +3,7 @@
     v-layout(row wrap)
       v-flex(xs12)
         .admin-header
-          img.animated.fadeInUp(src='/_assets/svg/icon-categorize.svg', alt='General', style='width: 80px;')
+          img.animated.fadeInUp(:src='$helpers.withAssetPath(`svg/icon-categorize.svg`)', alt='General', style='width: 80px;')
           .admin-header-title
             .headline.primary--text.animated.fadeInLeft {{ $t('admin:general.title') }}
             .subtitle-1.grey--text.animated.fadeInLeft {{ $t('admin:general.subtitle') }}
@@ -30,6 +30,14 @@
                       :hint='$t(`admin:general.siteUrlHint`)'
                       persistent-hint
                       )
+                    v-text-field.mt-3(
+                      outlined
+                      label='Base Path'
+                      v-model='config.basePath'
+                      prepend-icon='mdi-subdirectory-arrow-right'
+                      hint='Optional public path prefix such as /wiki. Leave empty for root deployment. Changing this requires a restart.'
+                      persistent-hint
+                    )
                     v-text-field.mt-3(
                       outlined
                       :label='$t(`admin:general.siteTitle`)'
@@ -282,6 +290,7 @@ export default {
     return {
       config: {
         host: '',
+        basePath: '',
         title: '',
         description: '',
         robots: [],
@@ -350,6 +359,7 @@ export default {
           mutation: gql`
             mutation (
               $host: String
+              $basePath: String
               $title: String
               $description: String
               $robots: [String]
@@ -374,6 +384,7 @@ export default {
               site {
                 updateConfig(
                   host: $host
+                  basePath: $basePath
                   title: $title
                   description: $description
                   robots: $robots
@@ -407,6 +418,7 @@ export default {
           `,
           variables: {
             host: _.get(this.config, 'host', ''),
+            basePath: _.get(this.config, 'basePath', ''),
             title: _.get(this.config, 'title', ''),
             description: _.get(this.config, 'description', ''),
             robots: _.get(this.config, 'robots', []),
@@ -469,6 +481,7 @@ export default {
           site {
             config {
               host
+              basePath
               title
               description
               robots

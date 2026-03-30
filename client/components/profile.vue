@@ -34,11 +34,11 @@
 <script>
 import VueRouter from 'vue-router'
 
-/* global WIKI */
+/* global WIKI siteConfig */
 
 const router = new VueRouter({
   mode: 'history',
-  base: '/p',
+  base: `${siteConfig.basePath || ''}/p`,
   routes: [
     { path: '/', redirect: '/profile' },
     { path: '/profile', component: () => import(/* webpackChunkName: "profile" */ './profile/profile.vue') },

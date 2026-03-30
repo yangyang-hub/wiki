@@ -4,6 +4,22 @@ import _ from 'lodash'
 /* global siteConfig */
 
 const helpers = {
+  withBasePath (rawPath = '/') {
+    let targetPath = rawPath
+    if (!_.startsWith(targetPath, '/')) {
+      targetPath = `/${targetPath}`
+    }
+    if (!siteConfig.basePath) {
+      return targetPath
+    }
+    if (targetPath === '/') {
+      return `${siteConfig.basePath}/`
+    }
+    return `${siteConfig.basePath}${targetPath}`
+  },
+  withAssetPath (rawPath = '/') {
+    return helpers.withBasePath(`/_assets/${_.trimStart(rawPath, '/')}`)
+  },
   /**
    * Convert bytes to humanized form
    * @param {number} rawSize Size in bytes

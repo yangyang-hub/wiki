@@ -25,6 +25,7 @@ type SiteQuery {
 type SiteMutation {
   updateConfig(
     host: String
+    basePath: String
     title: String
     description: String
     robots: [String]
@@ -75,6 +76,7 @@ type SiteMutation {
 
 type SiteConfig {
   host: String
+  basePath: String
   title: String
   description: String
   robots: [String]

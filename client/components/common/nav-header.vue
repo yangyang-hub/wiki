@@ -72,7 +72,7 @@
               )
             v-tooltip(bottom)
               template(v-slot:activator='{ on }')
-                v-btn.ml-2.mr-0(icon, v-on='on', href='/t', :aria-label='$t(`common:header.browseTags`)')
+                v-btn.ml-2.mr-0(icon, v-on='on', :href='$helpers.withBasePath(`/t`)', :aria-label='$t(`common:header.browseTags`)')
                   v-icon(color='grey') mdi-tag-multiple
               span {{$t('common:header.browseTags')}}
       v-flex(xs7, md4)
@@ -180,10 +180,10 @@
           template(v-if='isAuthenticated && isAdmin')
             v-tooltip(bottom, v-if='mode !== `admin`')
               template(v-slot:activator='{ on }')
-                v-btn(icon, tile, height='64', v-on='on', href='/a', :aria-label='$t(`common:header.admin`)')
+                v-btn(icon, tile, height='64', v-on='on', :href='$helpers.withBasePath(`/a`)', :aria-label='$t(`common:header.admin`)')
                   v-icon(color='grey') mdi-cog
               span {{$t('common:header.admin')}}
-            v-btn(v-else, text, tile, height='64', href='/', :aria-label='$t(`common:actions.exit`)')
+            v-btn(v-else, text, tile, height='64', :href='$helpers.withBasePath(`/`)', :aria-label='$t(`common:actions.exit`)')
               v-icon(left, color='grey') mdi-exit-to-app
               span {{$t('common:actions.exit')}}
             v-divider(vertical)
@@ -222,7 +222,7 @@
               //-   v-list-item-content
               //-     v-list-item-title {{$t('common:header.myWiki')}}
               //-     v-list-item-subtitle.overline Coming soon
-              v-list-item(href='/p')
+              v-list-item(:href='$helpers.withBasePath(`/p`)')
                 v-list-item-action: v-icon(color='blue-grey') mdi-face-profile
                 v-list-item-content
                   v-list-item-title(:class='$vuetify.theme.dark ? `blue-grey--text text--lighten-3` : `blue-grey--text`') {{$t('common:header.profile')}}
@@ -232,7 +232,7 @@
 
           v-tooltip(v-else, left)
             template(v-slot:activator='{ on }')
-              v-btn(icon, v-on='on', color='grey darken-3', href='/login', :aria-label='$t(`common:header.login`)')
+              v-btn(icon, v-on='on', color='grey darken-3', :href='$helpers.withBasePath(`/login`)', :aria-label='$t(`common:header.login`)')
                 v-icon(color='grey') mdi-account-circle
             span {{$t('common:header.login')}}
 
@@ -311,7 +311,7 @@ export default {
       if (this.pictureUrl && this.pictureUrl.length > 1) {
         return {
           kind: 'image',
-          url: (this.pictureUrl === 'internal') ? `/_userav/${this.$store.get('user/id')}` : this.pictureUrl
+          url: (this.pictureUrl === 'internal') ? this.$helpers.withBasePath(`/_userav/${this.$store.get('user/id')}`) : this.pictureUrl
         }
       } else {
         const nameParts = this.name.toUpperCase().split(' ')
@@ -348,25 +348,25 @@ export default {
     }
   },
   mounted () {
-    this.$root.$on('pageEdit', () => {
+    this.$root.$on('page-edit', () => {
       this.pageEdit()
     })
-    this.$root.$on('pageHistory', () => {
+    this.$root.$on('page-history', () => {
       this.pageHistory()
     })
-    this.$root.$on('pageSource', () => {
+    this.$root.$on('page-source', () => {
       this.pageSource()
     })
-    this.$root.$on('pageMove', () => {
+    this.$root.$on('page-move', () => {
       this.pageMove()
     })
-    this.$root.$on('pageConvert', () => {
+    this.$root.$on('page-convert', () => {
       this.pageConvert()
     })
-    this.$root.$on('pageDuplicate', () => {
+    this.$root.$on('page-duplicate', () => {
       this.pageDuplicate()
     })
-    this.$root.$on('pageDelete', () => {
+    this.$root.$on('page-delete', () => {
       this.pageDelete()
     })
     this.isDevMode = siteConfig.devMode === true
@@ -391,28 +391,28 @@ export default {
       }
     },
     searchEnter () {
-      this.$root.$emit('searchEnter', true)
+      this.$root.$emit('search-enter', true)
     },
     searchMove(dir) {
-      this.$root.$emit('searchMove', dir)
+      this.$root.$emit('search-move', dir)
     },
     pageNew () {
       this.newPageModal = true
     },
     pageNewCreate ({ path, locale }) {
-      window.location.assign(`/e/${locale}/${path}`)
+      window.location.assign(this.$helpers.withBasePath(`/e/${locale}/${path}`))
     },
     pageView () {
-      window.location.assign(`/${this.locale}/${this.path}`)
+      window.location.assign(this.$helpers.withBasePath(`/${this.locale}/${this.path}`))
     },
     pageEdit () {
-      window.location.assign(`/e/${this.locale}/${this.path}`)
+      window.location.assign(this.$helpers.withBasePath(`/e/${this.locale}/${this.path}`))
     },
     pageHistory () {
-      window.location.assign(`/h/${this.locale}/${this.path}`)
+      window.location.assign(this.$helpers.withBasePath(`/h/${this.locale}/${this.path}`))
     },
     pageSource () {
-      window.location.assign(`/s/${this.locale}/${this.path}`)
+      window.location.assign(this.$helpers.withBasePath(`/s/${this.locale}/${this.path}`))
     },
     pageDuplicate () {
       const pathParts = this.path.split('/')
@@ -423,7 +423,7 @@ export default {
       }
     },
     pageDuplicateHandle ({ locale, path }) {
-      window.location.assign(`/e/${locale}/${path}?from=${this.$store.get('page/id')}`)
+      window.location.assign(this.$helpers.withBasePath(`/e/${locale}/${path}?from=${this.$store.get('page/id')}`))
     },
     pageConvert () {
       this.convertPageModal = true
@@ -443,7 +443,7 @@ export default {
           }
         })
         if (_.get(resp, 'data.pages.move.responseResult.succeeded', false)) {
-          window.location.replace(`/${locale}/${path}`)
+          window.location.replace(this.$helpers.withBasePath(`/${locale}/${path}`))
         } else {
           throw new Error(_.get(resp, 'data.pages.move.responseResult.message', this.$t('common:error.unexpected')))
         }
@@ -468,15 +468,15 @@ export default {
       switch (this.mode) {
         case 'view':
         case 'history':
-          window.location.assign(`/${locale.code}/${this.path}`)
+          window.location.assign(this.$helpers.withBasePath(`/${locale.code}/${this.path}`))
           break
       }
     },
     logout () {
-      window.location.assign('/logout')
+      window.location.assign(this.$helpers.withBasePath('/logout'))
     },
     goHome () {
-      window.location.assign('/')
+      window.location.assign(this.$helpers.withBasePath('/'))
     }
   }
 }

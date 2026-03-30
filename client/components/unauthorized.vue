@@ -2,10 +2,10 @@
   v-app
     .unauthorized
       .unauthorized-content
-        img.animated.fadeIn(src='/_assets/svg/icon-delete-shield.svg', alt='Unauthorized')
+        img.animated.fadeIn(:src='$helpers.withAssetPath(`svg/icon-delete-shield.svg`)', alt='Unauthorized')
         .headline {{$t('unauthorized.title')}}
         .subtitle-1.mt-3 {{$t('unauthorized.action.' + action)}}
-        v-btn.mt-5(href='/login', x-large)
+        v-btn.mt-5(:href='$helpers.withBasePath(`/login`)', x-large)
           v-icon(left) mdi-login
           span {{$t('unauthorized.login')}}
         v-btn.mt-5(color='red lighten-4', href='javascript:window.history.go(-1);', outlined)

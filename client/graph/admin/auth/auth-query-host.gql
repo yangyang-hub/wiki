@@ -2,6 +2,7 @@
   site {
     config {
       host
+      basePath
     }
   }
 }

@@ -371,10 +371,10 @@ export default {
       }
     },
     viewSource (versionId) {
-      window.location.assign(`/s/${this.locale}/${this.path}?v=${versionId}`)
+      window.location.assign(this.$helpers.withBasePath(`/s/${this.locale}/${this.path}?v=${versionId}`))
     },
     download (versionId) {
-      window.location.assign(`/d/${this.locale}/${this.path}?v=${versionId}`)
+      window.location.assign(this.$helpers.withBasePath(`/d/${this.locale}/${this.path}?v=${versionId}`))
     },
     restore (versionId, versionDate) {
       this.restoreTarget = {
@@ -415,7 +415,7 @@ export default {
           })
           this.isRestoreConfirmDialogShown = false
           setTimeout(() => {
-            window.location.assign(`/${this.locale}/${this.path}`)
+            window.location.assign(this.$helpers.withBasePath(`/${this.locale}/${this.path}`))
           }, 1000)
         } else {
           throw new Error(_.get(resp, 'data.pages.restore.responseResult.message', 'An unexpected error occurred'))
@@ -440,13 +440,13 @@ export default {
       }
     },
     branchOffHandle ({ locale, path }) {
-      window.location.assign(`/e/${locale}/${path}?from=${this.pageId},${this.branchOffOpts.versionId}`)
+      window.location.assign(this.$helpers.withBasePath(`/e/${locale}/${path}?from=${this.pageId},${this.branchOffOpts.versionId}`))
     },
     toggleViewMode () {
       this.viewMode = (this.viewMode === 'line-by-line') ? 'side-by-side' : 'line-by-line'
     },
     goLive () {
-      window.location.assign(`/${this.path}`)
+      window.location.assign(this.$helpers.withBasePath(`/${this.path}`))
     },
     setDiffSource (versionId) {
       this.diffSource = versionId

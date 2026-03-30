@@ -3,7 +3,7 @@
     v-layout(row wrap)
       v-flex(xs12)
         .profile-header
-          img.animated.fadeInUp(src='/_assets/svg/icon-profile.svg', alt='Users', style='width: 80px;')
+          img.animated.fadeInUp(:src='$helpers.withAssetPath(`svg/icon-profile.svg`)', alt='Users', style='width: 80px;')
           .profile-header-title
             .headline.primary--text.animated.fadeInLeft {{$t('profile:title')}}
             .subheading.grey--text.animated.fadeInLeft {{$t('profile:subtitle')}}
@@ -683,14 +683,14 @@ export default {
     }
   },
   watch: {
-    'user.appearance': (newValue, oldValue) => {
+    'user.appearance': function (newValue, oldValue) {
       if (newValue === '') {
         WIKI.$vuetify.theme.dark = siteConfig.darkMode
       } else {
         WIKI.$vuetify.theme.dark = (newValue === 'dark')
       }
     },
-    'user.dateFormat': (newValue, oldValue) => {
+    'user.dateFormat': function (newValue, oldValue) {
       if (newValue === '') {
         WIKI.$moment.updateLocale(WIKI.$moment.locale(), null)
       } else {
@@ -701,7 +701,7 @@ export default {
         })
       }
     },
-    'user.timezone': (newValue, oldValue) => {
+    'user.timezone': function (newValue, oldValue) {
       if (newValue === '') {
         WIKI.$moment.tz.setDefault()
       } else {

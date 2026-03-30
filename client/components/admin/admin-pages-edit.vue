@@ -3,7 +3,7 @@
     v-layout(row, wrap, v-if='page.id')
       v-flex(xs12)
         .admin-header
-          img.animated.fadeInUp(src='/_assets/svg/icon-view-details.svg', alt='Edit Page', style='width: 80px;')
+          img.animated.fadeInUp(:src='$helpers.withAssetPath(`svg/icon-view-details.svg`)', alt='Edit Page', style='width: 80px;')
           .admin-header-title
             .headline.blue--text.text--darken-2.animated.fadeInLeft Page Details
             .subtitle-1.grey--text.animated.fadeInLeft.wait-p2s
@@ -31,11 +31,11 @@
                 span Actions
                 v-icon(right) mdi-chevron-down
             v-list(dense, nav)
-              v-list-item(:href='`/` + page.locale + `/` + page.path')
+              v-list-item(:href='$helpers.withBasePath(`/` + page.locale + `/` + page.path)')
                 v-list-item-icon
                   v-icon(color='indigo') mdi-text-subject
                 v-list-item-title View
-              v-list-item(:href='`/e/` + page.locale + `/` + page.path')
+              v-list-item(:href='$helpers.withBasePath(`/e/` + page.locale + `/` + page.path)')
                 v-list-item-icon
                   v-icon(color='indigo') mdi-pencil
                 v-list-item-title Edit
@@ -47,11 +47,11 @@
                 v-list-item-icon
                   v-icon(color='grey') mdi-earth-remove
                 v-list-item-title Unpublish
-              v-list-item(:href='`/s/` + page.locale + `/` + page.path')
+              v-list-item(:href='$helpers.withBasePath(`/s/` + page.locale + `/` + page.path)')
                 v-list-item-icon
                   v-icon(color='indigo') mdi-code-tags
                 v-list-item-title View Source
-              v-list-item(:href='`/h/` + page.locale + `/` + page.path')
+              v-list-item(:href='$helpers.withBasePath(`/h/` + page.locale + `/` + page.path)')
                 v-list-item-icon
                   v-icon(color='indigo') mdi-history
                 v-list-item-title View History

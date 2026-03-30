@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const chalk = require('chalk')
 const cfgHelper = require('../helpers/config')
+const basePathHelper = require('../helpers/basepath')
 const fs = require('fs')
 const path = require('path')
 const yaml = require('js-yaml')
@@ -48,6 +49,16 @@ module.exports = {
       process.exit(1)
     }
 
+    // Normalize deployment base path / alias before defaults:
+    // config.yml wins; env vars are fallback only when config does not define it.
+    const envBasePath = process.env.WIKI_BASE_PATH || process.env.BASE_PATH || process.env.BASEURL
+    if (!_.has(appconfig, 'basePath') && _.has(appconfig, 'baseurl')) {
+      appconfig.basePath = appconfig.baseurl
+    }
+    if (!_.has(appconfig, 'basePath') && !_.isNil(envBasePath)) {
+      appconfig.basePath = envBasePath
+    }
+
     // Merge with defaults
 
     appconfig = _.defaultsDeep(appconfig, appdata.defaults.config)
@@ -71,6 +82,8 @@ module.exports = {
     }
 
     WIKI.config = appconfig
+    WIKI.config.basePath = basePathHelper.normalizeBasePath(WIKI.config.basePath)
+    WIKI.config.siteBaseUrl = basePathHelper.withSiteUrl(WIKI.config.host, WIKI.config.basePath)
     WIKI.data = appdata
     WIKI.version = packageInfo.version
     WIKI.releaseDate = packageInfo.releaseDate
@@ -84,6 +97,8 @@ module.exports = {
     let conf = await WIKI.models.settings.getConfig()
     if (conf) {
       WIKI.config = _.defaultsDeep(conf, WIKI.config)
+      WIKI.config.basePath = basePathHelper.normalizeBasePath(WIKI.config.basePath)
+      WIKI.config.siteBaseUrl = basePathHelper.withSiteUrl(WIKI.config.host, WIKI.config.basePath)
     } else {
       WIKI.logger.warn('DB Configuration is empty or incomplete. Switching to Setup mode...')
       WIKI.config.setup = true

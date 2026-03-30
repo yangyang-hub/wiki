@@ -25,6 +25,8 @@ const babelDir = path.join(process.cwd(), '.webpack-cache/babel')
 process.noDeprecation = true
 
 fs.emptyDirSync(path.join(process.cwd(), 'assets'))
+const basePath = _.trimEnd(process.env.WIKI_BASE_PATH || '', '/')
+const publicPath = `${basePath}/_assets/`
 
 module.exports = {
   mode: 'production',
@@ -35,7 +37,7 @@ module.exports = {
   },
   output: {
     path: path.join(process.cwd(), 'assets'),
-    publicPath: '/_assets/',
+    publicPath,
     filename: `js/[name].js?${now}`,
     chunkFilename: `js/[name].js?${now}`,
     globalObject: 'this',

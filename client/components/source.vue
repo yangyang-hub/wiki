@@ -71,10 +71,10 @@ export default {
   },
   methods: {
     goLive() {
-      window.location.assign(`/${this.locale}/${this.path}`)
+      window.location.assign(this.$helpers.withBasePath(`/${this.locale}/${this.path}`))
     },
     goHistory () {
-      window.location.assign(`/h/${this.locale}/${this.path}`)
+      window.location.assign(this.$helpers.withBasePath(`/h/${this.locale}/${this.path}`))
     }
   }
 }

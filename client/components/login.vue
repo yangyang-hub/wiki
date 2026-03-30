@@ -94,7 +94,7 @@
                 color='indigo darken-2'
                 text
                 rounded
-                href='/register'
+                :href='$helpers.withBasePath(`/register`)'
                 ): .caption {{ $t('auth:switchToRegister.link') }}
         //-------------------------------------------------
         //- FORGOT PASSWORD FORM
@@ -185,7 +185,7 @@
     v-dialog(v-model='isTFAShown', max-width='500', persistent)
       v-card
         .login-tfa.text-center.pa-5.grey--text.text--darken-3
-          img(src='_assets/svg/icon-pin-pad.svg')
+          img(:src='$helpers.withAssetPath(`svg/icon-pin-pad.svg`)')
           .subtitle-2 {{$t('auth:tfaFormTitle')}}
           v-text-field.login-tfa-field.mt-2(
             solo
@@ -333,7 +333,7 @@ export default {
       this.screen = 'login'
       if (!this.selectedStrategy.strategy.useForm) {
         this.isLoading = true
-        window.location.assign('/login/' + newValue)
+        window.location.assign(this.$helpers.withBasePath('/login/' + newValue))
       } else {
         this.$nextTick(() => {
           this.$refs.iptEmail.focus()
@@ -646,14 +646,14 @@ export default {
           const loginRedirect = Cookies.get('loginRedirect')
           if (loginRedirect === '/' && respObj.redirect) {
             Cookies.remove('loginRedirect')
-            window.location.replace(respObj.redirect)
+            window.location.replace(this.$helpers.withBasePath(respObj.redirect))
           } else if (loginRedirect) {
             Cookies.remove('loginRedirect')
-            window.location.replace(loginRedirect)
+            window.location.replace(this.$helpers.withBasePath(loginRedirect))
           } else if (respObj.redirect) {
-            window.location.replace(respObj.redirect)
+            window.location.replace(this.$helpers.withBasePath(respObj.redirect))
           } else {
-            window.location.replace('/')
+            window.location.replace(this.$helpers.withBasePath('/'))
           }
         }, 1000)
       }

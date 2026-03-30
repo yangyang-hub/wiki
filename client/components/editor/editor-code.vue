@@ -247,7 +247,7 @@ export default {
     })
 
     // Handle save conflict
-    this.$root.$on('saveConflict', () => {
+    this.$root.$on('save-conflict', () => {
       this.toggleModal(`editorModalConflict`)
     })
     this.$root.$on('overwriteEditorContent', () => {

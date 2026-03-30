@@ -10,7 +10,7 @@
                 .body-2.mt-3 Cloning the dev branch directly from GitHub is #[strong NOT] the proper way to install Wiki.js!
                 .body-2 Read the #[a(href='https://docs.requarks.io/install', style='color: #FFF;') documentation] on correctly installing the latest stable version.
               .text-center
-                img.setup-logo.animated.fadeInUp.wait-p2s(src='/_assets/svg/logo-wikijs-full.svg', alt='Wiki.js Logo')
+                img.setup-logo.animated.fadeInUp.wait-p2s(:src='$helpers.withAssetPath(`svg/logo-wikijs-full.svg`)', alt='Wiki.js Logo')
               v-alert(v-model='error', type='error', icon='mdi-alert', tile, dismissible) {{ errorMessage }}
               v-alert(v-if='!error', tile, color='blue lighten-5', :value='true')
                 v-icon.mr-3(color='blue') mdi-package-variant
@@ -63,6 +63,14 @@
                   v-model='conf.siteUrl',
                   label='Site URL',
                   hint='Full URL to your wiki, without the trailing slash (e.g. https://wiki.example.com). This should be the public facing URL, not the internal one if using a reverse-proxy.',
+                  persistent-hint
+                  @keyup.enter='install'
+                )
+                v-text-field.mb-4.mx-3(
+                  outlined
+                  v-model='conf.basePath',
+                  label='Base Path',
+                  hint='Optional public path prefix such as /wiki. Leave empty for root deployment.'
                   persistent-hint
                   @keyup.enter='install'
                 )
@@ -129,6 +137,7 @@ export default {
         adminPassword: '',
         adminPasswordConfirm: '',
         siteUrl: 'https://wiki.yourdomain.com',
+        basePath: '',
         telemetry: true
       },
       pwdMode: true,
@@ -196,7 +205,7 @@ export default {
 
       _.delay(async () => {
         try {
-          const resp = await fetch('/finalize', {
+          const resp = await fetch(this.$helpers.withBasePath('/finalize'), {
             method: 'POST',
             cache: 'no-cache',
             headers: {
@@ -214,7 +223,7 @@ export default {
               })
               this.success = true
               _.delay(() => {
-                window.location.assign('/login')
+                window.location.assign(this.$helpers.withBasePath('/login'))
               }, 3000)
             }, 10000)
           } else {

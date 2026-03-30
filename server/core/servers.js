@@ -4,6 +4,7 @@ const https = require('https')
 const { ApolloServer } = require('apollo-server-express')
 const Promise = require('bluebird')
 const _ = require('lodash')
+const basePathHelper = require('../helpers/basepath')
 
 /* global WIKI */
 
@@ -120,6 +121,8 @@ module.exports = {
    */
   async startGraphQL () {
     const graphqlSchema = require('../graph')
+    const graphQLPath = basePathHelper.withBasePath(WIKI.config.basePath, '/graphql')
+    const graphQLSubscriptionsPath = basePathHelper.withBasePath(WIKI.config.basePath, '/graphql-subscriptions')
     this.servers.graph = new ApolloServer({
       ...graphqlSchema,
       context: ({ req, res }) => ({ req, res }),
@@ -127,10 +130,10 @@ module.exports = {
         onConnect: (connectionParams, webSocket) => {
 
         },
-        path: '/graphql-subscriptions'
+        path: graphQLSubscriptionsPath
       }
     })
-    this.servers.graph.applyMiddleware({ app: WIKI.app, cors: false })
+    this.servers.graph.applyMiddleware({ app: WIKI.app, cors: false, path: graphQLPath })
   },
   /**
    * Close all active connections
