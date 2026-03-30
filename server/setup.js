@@ -21,6 +21,7 @@ module.exports = () => {
     title: 'Wiki.js'
   }
   WIKI.config.basePath = basePathHelper.normalizeBasePath(WIKI.config.basePath)
+  const basePath = WIKI.config.basePath || ''
   const assetBasePath = basePathHelper.withBasePath(WIKI.config.basePath, '/_assets')
 
   WIKI.system = require('./core/system')
@@ -79,7 +80,7 @@ module.exports = () => {
   /**
    * Finalize
    */
-  app.post('/finalize', async (req, res) => {
+  app.post(basePathHelper.withBasePath(basePath, '/finalize'), async (req, res) => {
     try {
       // Set config
       _.set(WIKI.config, 'auth', {
@@ -95,7 +96,6 @@ module.exports = () => {
       })
       _.set(WIKI.config, 'graphEndpoint', 'https://graph.requarks.io')
       _.set(WIKI.config, 'host', req.body.siteUrl)
-      _.set(WIKI.config, 'basePath', basePathHelper.normalizeBasePath(req.body.basePath))
       _.set(WIKI.config, 'lang', {
         code: 'en',
         autoUpdate: true,
@@ -183,7 +183,6 @@ module.exports = () => {
       WIKI.logger.info('Persisting config to DB...')
       await WIKI.configSvc.saveToDb([
         'auth',
-        'basePath',
         'certs',
         'company',
         'features',
@@ -453,7 +452,7 @@ module.exports = () => {
     WIKI.logger.info('HTTP Server: [ RUNNING ]')
     WIKI.logger.info('🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻🔻')
     WIKI.logger.info('')
-    WIKI.logger.info(`Browse to http://YOUR-SERVER-IP:${WIKI.config.port}/ to complete setup!`)
+    WIKI.logger.info(`Browse to http://YOUR-SERVER-IP:${WIKI.config.port}${basePathHelper.withBasePath(basePath, '/')} to complete setup!`)
     WIKI.logger.info('')
     WIKI.logger.info('🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺')
   })

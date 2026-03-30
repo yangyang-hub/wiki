@@ -70,9 +70,9 @@
                   outlined
                   v-model='conf.basePath',
                   label='Base Path',
-                  hint='Optional public path prefix such as /wiki. Leave empty for root deployment.'
+                  hint='Managed from config.yml or environment variables only.'
                   persistent-hint
-                  @keyup.enter='install'
+                  disabled
                 )
                 v-divider.mb-4
                 .overline.pl-3.mb-3 Telemetry
@@ -137,7 +137,7 @@ export default {
         adminPassword: '',
         adminPasswordConfirm: '',
         siteUrl: 'https://wiki.yourdomain.com',
-        basePath: '',
+        basePath: siteConfig.basePath || '',
         telemetry: true
       },
       pwdMode: true,

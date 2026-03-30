@@ -45,7 +45,7 @@ export default {
             style: 'success',
             icon: 'check'
           })
-          Cookies.remove('jwt')
+          Cookies.remove('jwt', this.$helpers.cookieOptions())
           _.delay(() => {
             window.location.assign(this.$helpers.withBasePath('/login'))
           }, 1000)

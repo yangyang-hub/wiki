@@ -641,14 +641,14 @@ export default {
       } else {
         this.loaderColor = 'green darken-1'
         this.loaderTitle = this.$t('auth:loginSuccess')
-        Cookies.set('jwt', respObj.jwt, { expires: 365 })
+        Cookies.set('jwt', respObj.jwt, this.$helpers.cookieOptions({ expires: 365 }))
         _.delay(() => {
           const loginRedirect = Cookies.get('loginRedirect')
           if (loginRedirect === '/' && respObj.redirect) {
-            Cookies.remove('loginRedirect')
+            Cookies.remove('loginRedirect', this.$helpers.cookieOptions())
             window.location.replace(this.$helpers.withBasePath(respObj.redirect))
           } else if (loginRedirect) {
-            Cookies.remove('loginRedirect')
+            Cookies.remove('loginRedirect', this.$helpers.cookieOptions())
             window.location.replace(this.$helpers.withBasePath(loginRedirect))
           } else if (respObj.redirect) {
             window.location.replace(this.$helpers.withBasePath(respObj.redirect))

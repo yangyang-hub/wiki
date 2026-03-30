@@ -12,6 +12,10 @@ const qs = require('querystring')
 
 const tmplCreateRegex = /^[0-9]+(,[0-9]+)?$/
 const withBasePath = targetPath => basePathHelper.withBasePath(WIKI.config.basePath, targetPath)
+const withBasePathIfLocal = targetPath => basePathHelper.withBasePathIfLocal(WIKI.config.basePath, targetPath)
+const redirectCookieOptions = {
+  path: WIKI.config.basePath || '/'
+}
 
 /**
  * Robots.txt
@@ -447,7 +451,8 @@ router.get('/*', async (req, res, next) => {
       if (!effectivePermissions.pages.read) {
         if (req.user.id === 2) {
           res.cookie('loginRedirect', req.originalUrl, {
-            maxAge: 15 * 60 * 1000
+            maxAge: 15 * 60 * 1000,
+            path: redirectCookieOptions.path
           })
         }
         if (pageArgs.path === 'home' && req.user.id === 2) {
@@ -489,7 +494,7 @@ router.get('/*', async (req, res, next) => {
           l: n.label,
           c: n.icon,
           y: n.targetType,
-          t: n.target
+          t: withBasePathIfLocal(n.target)
         }))
 
         // -> Build theme code injection

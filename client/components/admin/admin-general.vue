@@ -35,8 +35,9 @@
                       label='Base Path'
                       v-model='config.basePath'
                       prepend-icon='mdi-subdirectory-arrow-right'
-                      hint='Optional public path prefix such as /wiki. Leave empty for root deployment. Changing this requires a restart.'
+                      hint='Managed from config.yml or environment variables only. Restart required after changing deployment config.'
                       persistent-hint
+                      disabled
                     )
                     v-text-field.mt-3(
                       outlined
@@ -359,7 +360,6 @@ export default {
           mutation: gql`
             mutation (
               $host: String
-              $basePath: String
               $title: String
               $description: String
               $robots: [String]
@@ -384,7 +384,6 @@ export default {
               site {
                 updateConfig(
                   host: $host
-                  basePath: $basePath
                   title: $title
                   description: $description
                   robots: $robots
@@ -418,7 +417,6 @@ export default {
           `,
           variables: {
             host: _.get(this.config, 'host', ''),
-            basePath: _.get(this.config, 'basePath', ''),
             title: _.get(this.config, 'title', ''),
             description: _.get(this.config, 'description', ''),
             robots: _.get(this.config, 'robots', []),

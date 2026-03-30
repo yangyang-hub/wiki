@@ -96,7 +96,9 @@ module.exports = {
   async loadFromDb() {
     let conf = await WIKI.models.settings.getConfig()
     if (conf) {
+      const deploymentBasePath = WIKI.config.basePath
       WIKI.config = _.defaultsDeep(conf, WIKI.config)
+      WIKI.config.basePath = deploymentBasePath
       WIKI.config.basePath = basePathHelper.normalizeBasePath(WIKI.config.basePath)
       WIKI.config.siteBaseUrl = basePathHelper.withSiteUrl(WIKI.config.host, WIKI.config.basePath)
     } else {
@@ -113,6 +115,9 @@ module.exports = {
   async saveToDb(keys, propagate = true) {
     try {
       for (let key of keys) {
+        if (key === 'basePath') {
+          continue
+        }
         let value = _.get(WIKI.config, key, null)
         if (!_.isPlainObject(value)) {
           value = { v: value }

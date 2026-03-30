@@ -37,6 +37,14 @@ function rewriteMediaUrls ($, basePath) {
   $('object').each((i, elm) => {
     rewriteLocalAssetAttr(elm, 'data')
   })
+
+  $('a').each((i, elm) => {
+    rewriteLocalAssetAttr(elm, 'href')
+  })
+
+  $('form').each((i, elm) => {
+    rewriteLocalAssetAttr(elm, 'action')
+  })
 }
 
 function rewriteHtmlMediaUrls (html, basePath) {

@@ -22,6 +22,13 @@ const bruteforce = new ExpressBrute(new BruteKnex({
 
 const withBasePath = targetPath => basePathHelper.withBasePath(WIKI.config.basePath, targetPath)
 const withLocalRedirect = targetPath => basePathHelper.withBasePathIfLocal(WIKI.config.basePath, targetPath)
+const authCookieOptions = expires => ({
+  expires,
+  path: WIKI.config.basePath || '/'
+})
+const redirectCookieOptions = {
+  path: WIKI.config.basePath || '/'
+}
 
 /**
  * Login form
@@ -74,14 +81,14 @@ router.all('/login/:strategy/callback', async (req, res, next) => {
     const authResult = await WIKI.models.users.login({
       strategy: req.params.strategy
     }, { req, res })
-    res.cookie('jwt', authResult.jwt, { expires: moment().add(1, 'y').toDate() })
+    res.cookie('jwt', authResult.jwt, authCookieOptions(moment().add(1, 'y').toDate()))
 
     const loginRedirect = req.cookies['loginRedirect']
     if (loginRedirect === '/' && authResult.redirect) {
-      res.clearCookie('loginRedirect')
+      res.clearCookie('loginRedirect', redirectCookieOptions)
       res.redirect(withLocalRedirect(authResult.redirect))
     } else if (loginRedirect) {
-      res.clearCookie('loginRedirect')
+      res.clearCookie('loginRedirect', redirectCookieOptions)
       res.redirect(withLocalRedirect(loginRedirect))
     } else if (authResult.redirect) {
       res.redirect(withLocalRedirect(authResult.redirect))
@@ -107,7 +114,7 @@ router.post('/login', bruteforce.prevent, async (req, res, next) => {
         password: req.body.pass
       }, { req, res })
       req.brute.reset()
-      res.cookie('jwt', authResult.jwt, { expires: moment().add(1, 'y').toDate() })
+      res.cookie('jwt', authResult.jwt, authCookieOptions(moment().add(1, 'y').toDate()))
       res.redirect(withBasePath('/'))
     } catch (err) {
       const { formStrategies, socialStrategies } = await WIKI.models.authentication.getStrategiesForLegacyClient()
@@ -128,7 +135,7 @@ router.post('/login', bruteforce.prevent, async (req, res, next) => {
 router.get('/logout', async (req, res) => {
   const redirURL = await WIKI.models.users.logout({ req, res })
   req.logout()
-  res.clearCookie('jwt')
+  res.clearCookie('jwt', redirectCookieOptions)
   res.redirect(withLocalRedirect(redirURL))
 })
 
@@ -157,7 +164,7 @@ router.get('/verify/:token', bruteforce.prevent, async (req, res, next) => {
       res.redirect(withBasePath('/login'))
     } else {
       const result = await WIKI.models.users.refreshToken(usr)
-      res.cookie('jwt', result.token, { expires: moment().add(1, 'years').toDate() })
+      res.cookie('jwt', result.token, authCookieOptions(moment().add(1, 'years').toDate()))
       res.redirect(withBasePath('/'))
     }
   } catch (err) {

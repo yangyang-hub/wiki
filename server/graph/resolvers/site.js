@@ -51,10 +51,6 @@ module.exports = {
           WIKI.config.host = siteHost
         }
 
-        if (args.hasOwnProperty('basePath')) {
-          WIKI.config.basePath = basePathHelper.normalizeBasePath(args.basePath)
-        }
-
         if (args.hasOwnProperty('title')) {
           WIKI.config.title = _.trim(args.title)
         }
@@ -133,7 +129,7 @@ module.exports = {
 
         WIKI.config.siteBaseUrl = basePathHelper.withSiteUrl(WIKI.config.host, WIKI.config.basePath)
 
-        await WIKI.configSvc.saveToDb(['host', 'basePath', 'title', 'company', 'contentLicense', 'footerOverride', 'seo', 'logoUrl', 'pageExtensions', 'auth', 'editShortcuts', 'features', 'security', 'uploads'])
+        await WIKI.configSvc.saveToDb(['host', 'title', 'company', 'contentLicense', 'footerOverride', 'seo', 'logoUrl', 'pageExtensions', 'auth', 'editShortcuts', 'features', 'security', 'uploads'])
 
         if (WIKI.config.security.securityTrustProxy) {
           WIKI.app.enable('trust proxy')

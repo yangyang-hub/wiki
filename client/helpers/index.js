@@ -20,6 +20,30 @@ const helpers = {
   withAssetPath (rawPath = '/') {
     return helpers.withBasePath(`/_assets/${_.trimStart(rawPath, '/')}`)
   },
+  withBasePathIfLocal (rawPath = '/') {
+    if (_.isNil(rawPath) || rawPath === '') {
+      return helpers.withBasePath('/')
+    }
+    if (/^(?:[a-z]+:)?\/\//i.test(rawPath) || _.startsWith(rawPath, 'data:') || _.startsWith(rawPath, 'mailto:') || _.startsWith(rawPath, 'tel:')) {
+      return rawPath
+    }
+    if (_.startsWith(rawPath, '#')) {
+      return rawPath
+    }
+    if (_.startsWith(rawPath, '/')) {
+      return helpers.withBasePath(rawPath)
+    }
+    return rawPath
+  },
+  cookiePath () {
+    return siteConfig.basePath || '/'
+  },
+  cookieOptions (extra = {}) {
+    return {
+      path: helpers.cookiePath(),
+      ...extra
+    }
+  },
   /**
    * Convert bytes to humanized form
    * @param {number} rawSize Size in bytes

@@ -104,7 +104,7 @@ const graphQLLink = ApolloLink.from([
       // Handle renewed JWT
       const newJWT = resp.headers.get('new-jwt')
       if (newJWT) {
-        Cookies.set('jwt', newJWT, { expires: 365 })
+        Cookies.set('jwt', newJWT, helpers.cookieOptions({ expires: 365 }))
       }
       return resp
     }

@@ -9,6 +9,7 @@ const crypto = Promise.promisifyAll(require('crypto'))
 const pem2jwk = require('pem-jwk').pem2jwk
 
 const securityHelper = require('../helpers/security')
+const basePathHelper = require('../helpers/basepath')
 
 /* global WIKI */
 
@@ -81,8 +82,8 @@ module.exports = {
         try {
           const strategy = require(`../modules/authentication/${stg.strategyKey}/authentication.js`)
 
-          stg.config.callbackURL = `${WIKI.config.host}/login/${stg.key}/callback`
-          stg.config.key = stg.key;
+          stg.config.callbackURL = basePathHelper.withSiteUrl(WIKI.config.siteBaseUrl || WIKI.config.host, `/login/${stg.key}/callback`)
+          stg.config.key = stg.key
           strategy.init(passport, stg.config)
           strategy.config = stg.config
 
@@ -154,7 +155,10 @@ module.exports = {
           if (req.get('content-type') === 'application/json') {
             res.set('new-jwt', newToken.token)
           } else {
-            res.cookie('jwt', newToken.token, { expires: DateTime.utc().plus({ days: 365 }).toJSDate() })
+            res.cookie('jwt', newToken.token, {
+              expires: DateTime.utc().plus({ days: 365 }).toJSDate(),
+              path: WIKI.config.basePath || '/'
+            })
           }
         } catch (errc) {
           WIKI.logger.warn(errc)
