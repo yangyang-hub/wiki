@@ -21,7 +21,7 @@
       v-flex(xs5, md4)
         v-toolbar.nav-header-inner(color='black', dark, flat, :class='$vuetify.rtl ? `pr-3` : `pl-3`')
           v-avatar(tile, size='34', @click='goHome')
-            v-img.org-logo(:src='logoUrl')
+            v-img.org-logo(:src='resolvedLogoUrl')
           //- v-menu(open-on-hover, offset-y, bottom, left, min-width='250', transition='slide-y-transition')
           //-   template(v-slot:activator='{ on }')
           //-     v-app-bar-nav-icon.btn-animate-app(v-on='on', :class='$vuetify.rtl ? `mx-0` : ``')
@@ -324,6 +324,9 @@ export default {
           initials
         }
       }
+    },
+    resolvedLogoUrl () {
+      return this.$helpers.withBasePathIfLocal(this.logoUrl)
     },
     isAdmin () {
       return _.intersection(this.permissions, ['manage:system', 'write:users', 'manage:users', 'write:groups', 'manage:groups', 'manage:navigation', 'manage:theme', 'manage:api']).length > 0

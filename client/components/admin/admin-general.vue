@@ -55,7 +55,7 @@
                     .d-flex.align-center
                       v-avatar(size='100', tile)
                         v-img(
-                          :src='config.logoUrl'
+                          :src='$helpers.withBasePathIfLocal(config.logoUrl)'
                           lazy-src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNcWQ8AAdcBKrJda2oAAAAASUVORK5CYII='
                           aspect-ratio='1'
                           )
