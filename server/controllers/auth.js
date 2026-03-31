@@ -26,8 +26,10 @@ const authCookieOptions = expires => ({
   expires,
   path: WIKI.config.basePath || '/'
 })
-const redirectCookieOptions = {
-  path: WIKI.config.basePath || '/'
+const clearCookieEverywhere = (res, cookieName) => {
+  _.uniq([WIKI.config.basePath || '/', '/']).forEach(cookiePath => {
+    res.clearCookie(cookieName, { path: cookiePath })
+  })
 }
 
 /**
@@ -85,10 +87,10 @@ router.all('/login/:strategy/callback', async (req, res, next) => {
 
     const loginRedirect = req.cookies['loginRedirect']
     if (loginRedirect === '/' && authResult.redirect) {
-      res.clearCookie('loginRedirect', redirectCookieOptions)
+      clearCookieEverywhere(res, 'loginRedirect')
       res.redirect(withLocalRedirect(authResult.redirect))
     } else if (loginRedirect) {
-      res.clearCookie('loginRedirect', redirectCookieOptions)
+      clearCookieEverywhere(res, 'loginRedirect')
       res.redirect(withLocalRedirect(loginRedirect))
     } else if (authResult.redirect) {
       res.redirect(withLocalRedirect(authResult.redirect))
@@ -135,7 +137,8 @@ router.post('/login', bruteforce.prevent, async (req, res, next) => {
 router.get('/logout', async (req, res) => {
   const redirURL = await WIKI.models.users.logout({ req, res })
   req.logout()
-  res.clearCookie('jwt', redirectCookieOptions)
+  clearCookieEverywhere(res, 'jwt')
+  clearCookieEverywhere(res, 'loginRedirect')
   res.redirect(withLocalRedirect(redirURL))
 })
 
